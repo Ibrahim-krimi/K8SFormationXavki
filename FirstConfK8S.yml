@@ -11,9 +11,20 @@ spec:
     volumeMounts:
     - mountPath: /usr/share/nginx/html
       name: monvolume
+  - name: debien
+    image: debian
+    command: ["sleep","600"]
+    volumeMounts:
+      - mountPath: /worktmp/
+        name: monvolume
+  - name: alpine
+    image: alpine
+    command: ['sh','-c','echo "bonjour ibrahim" >/myjob/index.html']
+    volumeMounts:
+    - mountPath: /myjob/
+      name: monvolume
+    
   volumes: 
   - name: monvolume
-    hostPath: 
-      path: /srv/data
-      type: Directory
+    emptyDir: {}
       

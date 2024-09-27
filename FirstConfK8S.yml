@@ -1,14 +1,11 @@
 apiVersion: v1
-kind: PersistentVolume
+kind: PersistentVolumeClaim
 metadata:
-  name: monpv
-  labels:
-    type: local
+  name: monpvc
 spec:
   storageClassName: manual
-  capacity:
-    storage: "1Gi"
   accessModes:
     - ReadWriteOnce
-  hostPath:
-    path: "/pvdata"
+  resources:
+    requests:
+      storage: 1Gi

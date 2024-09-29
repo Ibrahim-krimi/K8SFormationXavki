@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mondebian
+spec:
+  containers:
+  - name: mondebian
+    image: debian
+    resources: {}
+    volumeMounts:
+    - name: monvolume
+      mountPath: /tmp/
+  volumes:
+  - name: monvolume
+    persistentVolumeClaim:
+      claimName: mynfspvc

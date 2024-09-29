@@ -1,0 +1,20 @@
+apiVersion: apps/v1  # Mettre à jour la version de l'API
+kind: Deployment
+metadata:
+  name: monfront
+spec:
+  replicas: 1
+  selector:  # Ajouter le selector
+    matchLabels:
+      app: front
+  template:
+    metadata:
+      labels:
+        app: front
+    spec:
+      containers:
+      - name: monpod
+        image: httpd
+        resources:
+          requests:
+            cpu: 10m

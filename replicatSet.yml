@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: monreplicaset
+  labels:
+    app: monfrontrs
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: frontend #il dois matcher avec le label du pod pour creer les replicat de pod
+  template:
+   metadata:
+     labels:
+       app: frontend #label du pod
+   spec:
+    containers:
+     - name: mynginx
+       image: nginx

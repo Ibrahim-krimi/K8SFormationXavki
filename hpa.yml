@@ -9,4 +9,4 @@ spec:
     name: monfront #reference au nom de mon deployment
   minReplicas: 3 # Mettre à jour le nombre min de réplicas
   maxReplicas: 10 # Mettre à jour le nombre maxde réplicas
-  targetCPUUtilizationPercentage: 11 # Mettre à jour le pourcentage de CPU
+  targetCPUUtilizationPercentage: 6 # Mettre à jour le pourcentage de CPU

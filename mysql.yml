@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: mysqlpod
+  name: modbpod
 spec:
   containers:
-  - name: monsql
+  - name: mondbsql
     image: mysql:5.7
     env:
     - name: MYSQL_ROOT_PASSWORD

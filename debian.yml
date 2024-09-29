@@ -6,7 +6,7 @@ spec:
   containers:
   - name: mondebian
     image: debian
-    resources: {}
+    command: ["/bin/bash", "-c" ,"sleep 600"]
     volumeMounts:
     - name: monvolume
       mountPath: /tmp/

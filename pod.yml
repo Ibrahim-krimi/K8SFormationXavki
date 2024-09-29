@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: monpod
+  labels:
+    env: prod
+    type: front
+spec: 
+  containers:
+  - name: nginx
+    image: nginx

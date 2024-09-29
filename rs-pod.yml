@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: front2
+  labels:
+    app: front
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      type: front #il directement matcher avec le label du pod front creer dans pod.yml
+      env: prod  # il doit matcher avec le label du pod front creer dans pod.yml 
+  template:
+   metadata:
+     labels:
+       type: front #label du pod
+       env: prod
+   spec:
+     containers:
+      - name: nginx
+        image: nginx    

@@ -1,0 +1,28 @@
+ ------------------------------------------------ COnfig map et secrets ----------------------------------------
+ **** creation d'un conf map
+ kubectl create configmap langue --from-literal=LANGUAGE=Fr
+c'est la meme chose que  : 
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: langue
+data:
+  LANGUAGE: "Fr"
+
+************* creation de secret 
+ 
+kubectl create secret generic mysqlpassword --from-literal=MYSQL_PASSWORD=123456
+
+************* creation d'une configmap avec plusieur variable
+
+kubectl create configmap langue --from-literal=LANGUAGE=Fr --from-literal=ENCODING=UTF-8
+
+***** creation d'une config from file
+
+kubectl create configmap maconfiguraiton --from-file=monfichier.cfg 
+
+
+****** mise a jour d'une config map
+
+kubectl edit configmap maconfiguraiton
+

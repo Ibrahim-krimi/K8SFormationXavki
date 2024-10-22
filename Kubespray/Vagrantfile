@@ -1,0 +1,56 @@
+# Vagrantfile configuration
+Vagrant.configure("2") do |config|
+    # Configuration commune pour tous les VMs
+    common = <<-SHELL
+      # Ajouter les nodes et le master dans le fichier hosts
+      if ! grep -q deploykub /etc/hosts; then sudo echo "192.168.6.120 deploykub" >> /etc/hosts; fi
+      if ! grep -q node01 /etc/hosts; then sudo echo "192.168.6.121 node01" >> /etc/hosts; fi
+      if ! grep -q node02 /etc/hosts; then sudo echo "192.168.6.122 node02" >> /etc/hosts; fi
+      if ! grep -q node03 /etc/hosts; then sudo echo "192.168.6.123 node03" >> /etc/hosts; fi
+  
+      # Installation de quelques paquets de base
+      sudo yum install -y vim tree net-tools telnet git python3-pip
+  
+      # Configurer vim pour éditer les fichiers YAML proprement
+      echo "autocmd filetype yaml setlocal ai ts=2 sw=2 et" > /home/vagrant/.vimrc
+  
+      # Modification de la configuration SSH
+      sudo sed -i 's/ChallengeResponseAuthentication no/ChallengeResponseAuthentication yes/g' /etc/ssh/sshd_config
+      sudo systemctl restart sshd
+    SHELL
+  
+    # Définition de la box CentOS 7
+    config.vm.box = "centos/7"
+    config.vm.box_url = "centos/7"
+  
+    # Configuration de la VM "deploykub" (le master)
+    config.vm.define "deploykub" do |deploykub|
+      deploykub.vm.hostname = "deploykub"
+      deploykub.vm.network "private_network", ip: "192.168.6.120"
+      deploykub.vm.provider "virtualbox" do |v|
+        v.customize ["modifyvm", :id, "--cpus", 2]  # CPU pour cette VM
+        v.customize ["modifyvm", :id, "--memory", 2048]  # Mémoire pour cette VM
+        v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+        v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+        v.name = "deploykub"
+      end
+      deploykub.vm.provision "shell", inline: common
+    end
+  
+    # Configuration des nodes
+    (1..3).each do |i|
+      config.vm.define "node0#{i}" do |node|
+        node.vm.hostname = "node0#{i}"
+        node.vm.network "private_network", ip: "192.168.6.12#{i}"
+        node.vm.provider "virtualbox" do |v|
+          v.customize ["modifyvm", :id, "--cpus", 2]  # CPU pour chaque node
+          v.customize ["modifyvm", :id, "--memory", 2048]  # Mémoire pour chaque node
+          v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+          v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+          v.name = "node0#{i}"
+        end
+        node.vm.provision "shell", inline: common
+      end
+    end
+  end
+  

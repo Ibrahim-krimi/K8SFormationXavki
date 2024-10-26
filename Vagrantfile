@@ -30,4 +30,25 @@ Vagrant.configure("2") do |config|
     kubnode.vm.synced_folder ".", "/vagrant", type: "rsync"
   end
 
+   # Définir la VM kubnode
+   config.vm.define "kubnode2" do |kubnode|
+    kubnode.vm.box = "bento/ubuntu-20.04"
+    kubnode.vm.hostname = "kubnode2"
+    kubnode.vm.provision "docker"
+    kubnode.vm.box_url = "bento/ubuntu-20.04"
+    kubnode.vm.network :private_network, ip: "192.168.56.103"
+    kubnode.vm.synced_folder ".", "/vagrant", type: "rsync"
+  end
+
+   # Définir la VM kubmaster
+   config.vm.define "kubmaster2" do |kub|
+    kub.vm.box = "bento/ubuntu-20.04"
+    kub.vm.hostname = "kubmaster2"
+    kub.vm.provision "docker"
+    kub.vm.box_url = "bento/ubuntu-20.04"
+    kub.vm.synced_folder ".", "/vagrant", type: "rsync"
+    kub.vm.network :private_network, ip: "192.168.56.104"
+  end
+
+
 end

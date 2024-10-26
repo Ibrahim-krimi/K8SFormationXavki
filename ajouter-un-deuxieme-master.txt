@@ -1,0 +1,39 @@
+Étapes pour Ajouter un Nœud de Contrôle (Master) dans Ton Cas
+Configurer un Load Balancer pour les Nœuds de Contrôle (si ce n’est pas déjà fait) :
+
+Tu peux utiliser HAProxy pour créer un load balancer, comme mentionné précédemment. Si tu as déjà configuré un load balancer, passe à l’étape suivante.
+Générer un Jeton kubeadm pour le Join :
+
+Sur un des nœuds de contrôle existants, génère une commande join pour ajouter un autre nœud de contrôle :
+bash
+Copier le code
+kubeadm token create --print-join-command
+La commande de join obtenue devra inclure l’option --control-plane pour transformer le nœud en maître.
+Exécuter la Commande join sur le Nouveau Nœud (Master) :
+
+Sur le nœud que tu veux promouvoir en master, exécute la commande join fournie. Par exemple :
+bash
+Copier le code
+kubeadm join <IP_LOAD_BALANCER>:6443 --token <TOKEN> --discovery-token-ca-cert-hash sha256:<HASH> --control-plane
+Important : Assure-toi que l’IP fournie est celle de ton load balancer.
+Partager les Certificats :
+
+Sur le nœud maître existant, partage les certificats nécessaires :
+bash
+Copier le code
+sudo mkdir -p /etc/kubernetes/pki/etcd
+sudo scp /etc/kubernetes/pki/* <IP_NEW_MASTER>:/etc/kubernetes/pki/
+sudo scp /etc/kubernetes/pki/etcd/* <IP_NEW_MASTER>:/etc/kubernetes/pki/etcd/
+Ces certificats permettent au nouveau nœud de s’authentifier en tant que nœud de contrôle.
+Redémarrer Kubelet sur le Nouveau Nœud :
+
+Une fois les certificats transférés, redémarre le service kubelet sur le nouveau master pour qu’il prenne effet :
+bash
+Copier le code
+sudo systemctl restart kubelet
+Vérification :
+
+Exécute la commande suivante depuis n’importe quel nœud de contrôle pour vérifier l’ajout du nouveau master :
+bash
+Copier le code
+kubectl get nodes

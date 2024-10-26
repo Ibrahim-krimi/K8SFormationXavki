@@ -1,0 +1,65 @@
+Étapes pour Installer Kubernetes 1.28 à partir des Nouveaux Dépôts pkgs.k8s.io
+Créer le Répertoire des Clés (si nécessaire)
+
+Assurez-vous que le répertoire des clés /etc/apt/keyrings existe (les versions précédentes d'Ubuntu peuvent ne pas l'avoir) :
+
+bash
+Copier le code
+sudo mkdir -p /etc/apt/keyrings
+Ajouter le Nouveau Dépôt Kubernetes pour la Version 1.28
+
+Configure le dépôt Kubernetes en version 1.28 :
+
+bash
+Copier le code
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+Télécharger et Installer la Clé de Signature
+
+Récupère la clé de signature de pkgs.k8s.io pour vérifier les paquets installés :
+
+bash
+Copier le code
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+Mettre à Jour et Installer les Paquets Kubernetes en Version 1.28
+
+Mets à jour la liste des paquets APT et installe kubelet, kubeadm, et kubectl :
+
+bash
+Copier le code
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl
+Épingler les Versions pour Éviter les Mises à Jour Automatiques
+
+Gèle les paquets pour que les versions ne soient pas mises à jour automatiquement :
+
+bash
+Copier le code
+sudo apt-mark hold kubelet kubeadm kubectl
+Ces étapes te permettront d’installer les composants Kubernetes depuis les nouveaux dépôts pkgs.k8s.io, ce qui remplacera les anciens dépôts Google. Si tu rencontres d'autres difficultés, n'hésite pas à me le faire savoir !
+
+
+
+
+
+
+root@vagrant:~# echo $PATH
+/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+root@vagrant:~# export PATH=$PATH:/usr/bin
+root@vagrant:~# echo 'export PATH=$PATH:/usr/bin' >> ~/.bashrc
+root@vagrant:~# source ~/.bashrc
+root@vagrant:~# kubelet --version
+
+
+Le pod kube-proxy-6q2vz sur le nœud kubnode est en état Unknown. Cela indique qu’il ne peut pas communiquer correctement avec le cluster. Pour diagnostiquer le problème, essaie de redémarrer le pod kube-proxy sur ce nœud :
+
+bash
+Copier le code
+kubectl delete pod kube-proxy-6q2vz -n kube-system
+Kubernetes recréera automatiquement ce pod. Vérifie ensuite son état 
+
+
+
+pour ajouter un node master ou worker : 
+
+
+kubeadm token create --print-join-command

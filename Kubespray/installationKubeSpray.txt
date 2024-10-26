@@ -1,33 +1,43 @@
-1. Pré-requis
-Assure-toi que les outils suivants sont installés sur ta machine ou ton serveur :
+Résumé des étapes :
+Installer les dépendances (Python, Ansible). version 3.10 / 2.16 => 9.11
+Cloner et configurer Kubespray. git 
+Préparer l'inventaire et le fichier hosts.ini.
+" [all] # déclaration des nodes
+node01 ansible_host=192.168.6.121 ip=192.168.6.121 etcd_member_name=etcd1
+node02 ansible_host=192.168.6.122 ip=192.168.6.122 etcd_member_name=etcd2
+node03 ansible_host=192.168.6.123 ip=192.168.6.123 etcd_member_name=etcd3
+node04 ansible_host=192.168.6.124 ip=192.168.6.124
+node05 ansible_host=192.168.6.125 ip=192.168.6.125
 
-Ansible : Automatisation de la configuration et du déploiement.
-Python : Python est nécessaire pour exécuter Ansible.
-pip : Gestionnaire de paquets Python.
-Vagrant (si tu utilises des machines virtuelles locales).
-Git : Pour cloner Kubespray.
-Sur ta machine Ubuntu/CentOS ou une autre distribution Linux, installe les pré-requis :
+[kube-master]
+node01
+node02
+node03
 
-bash
-Copier le code
+[etcd]
+node01
+node02
+node03
 
-sudo apt update  # ou sudo yum update pour CentOS
-sudo apt install -y python3 python3-pip git
-pip3 install ansible
+[kube-node]
+node04
+node05
 
-2. Cloner le dépôt Kubespray
-git clone https://github.com/kubernetes-sigs/kubespray.git
-cd kubespray
+[calico-rr]
 
-3.  Créer un environnement virtuel (optionnel mais recommandé)
-Tu peux créer un environnement virtuel Python pour éviter des conflits avec d'autres paquets installés sur ton système.
+[k8s-cluster:children]
+kube-master
+kube-node
+calico-rr"
+Lancer le déploiement du cluster Kubernetes via Ansible.
 
-bash
-Copier le code
-python3 -m venv venv
-source venv/bin/activate
-Installe ensuite les dépendances de Kubespray via pip :
+ ansible-playbook -i inventory/mycluster/inventory.ini -u vagrant -k -b cluster.yml
 
-bash
-Copier le code
-pip install -r requirements.txt
+Vérifier l'état du cluster.
+
+
+
+
+
+
+
